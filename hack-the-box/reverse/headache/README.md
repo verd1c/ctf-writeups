@@ -35,7 +35,7 @@ Our only solution at this point is to debug step into main. Let's set a breakpoi
 
 ![Init proc](img/initprocbp.png)
 
-We keep F8'ing and we reach the following function that does some yet unknown stuff. Let's give it a name, say "Entry".
+We keep F8'ing and we reach the following function that does some yet unknown stuff. Let's give it a name, say "Entry" and disassemble into pseudocode.
 
 ![Init proc](img/entry.png)
 
@@ -44,8 +44,4 @@ Right off the bat we see a couple of sketchy stuff.
 1. A system call to 0x64, which corresponds to ptrace
 2. A string ```a15abe90c112d09369d9f9da9a8c046e``` that looks nothing that we know of yet, but seems to be used as input to some function
 
-Let's note those down for later. If we keep debugging, we can see that the program continues on 
-```assembly
-call    loc_55690B0D7FAF
-```
-so let's assume that is our main function and rename it
+The next thing we see is what appears to be a hardcoded condition. v3 appears to be the result of ptrace, and it's set to 101, followed by an if statement which will always succeed and call ```sub_55FF898683C1```. Stepping into ```sub_55FF898683C1``` we can see that it's blatantly our main processing function that contains the input and it's processing. Let's call it main for now.
