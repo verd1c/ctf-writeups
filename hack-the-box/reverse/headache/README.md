@@ -37,7 +37,7 @@ Our only solution at this point is to debug step into main. Let's set a breakpoi
 
 We keep F8'ing and we reach the following function that does some yet unknown stuff. Let's give it a name, say "Entry" and disassemble into pseudocode.
 
-![Init proc](img/entry.png)
+![Init proc](img/entry1.png)
 
 Right off the bat we see a couple of sketchy stuff.
 
