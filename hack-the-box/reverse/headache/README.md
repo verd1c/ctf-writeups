@@ -1,5 +1,7 @@
 # Headache (actually)
 
+This is a decently detailed walkthrough so make sure to set back, relax and grab yourself some coffee (or tea, I don't judge)
+
 ## Initial Execution
 
 First things first, the challenge provides us with a single UNIX executable. Let's try and run it to see the output...
@@ -45,3 +47,7 @@ Right off the bat we see a couple of sketchy stuff.
 2. A string ```a15abe90c112d09369d9f9da9a8c046e``` that looks nothing that we know of yet, but seems to be used as input to some function
 
 The next thing we see is what appears to be a hardcoded condition. v3 appears to be the result of ptrace, and it's set to 101, followed by an if statement which will always succeed and call ```sub_55FF898683C1```. Stepping into ```sub_55FF898683C1``` we can see that it's blatantly our main processing function that contains the input and it's processing. Let's call it main for now.
+
+![Init proc](img/main.png)
+
+tbc...
