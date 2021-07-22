@@ -18,3 +18,13 @@ Opening the file in IDA, we can instantly tell it's a [stripped binary](https://
 
 First things first, let's do a string search. Maybe that would point us to the main function or some other kind of clue?
 
+![Second run](img/strings.png)
+
+Along with a lot of random strings, we see some known strings from our first executions, such as:
+
+* Initialising
+* Enter the key:
+* Login Failed!
+* Login success!
+
+We also see a blatantly fake flag, HTB{not_so_easy_lol}, let's assume and hope that's not the flag.
