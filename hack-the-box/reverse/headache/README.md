@@ -44,7 +44,7 @@ Right off the bat we see a couple of sketchy stuff.
 1. A system call to 0x64, which corresponds to ptrace
 2. A string ```a15abe90c112d09369d9f9da9a8c046e``` that looks nothing that we know of yet, but seems to be used as input to some function
 
-If we keep debugging, we can see that the program continues on 
+Let's note those down for later. If we keep debugging, we can see that the program continues on 
 ```assembly
 call    loc_55690B0D7FAF
 ```
