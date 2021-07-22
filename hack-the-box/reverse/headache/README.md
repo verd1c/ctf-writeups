@@ -35,4 +35,6 @@ Our only solution at this point is to debug step into main. Let's set a breakpoi
 
 ![Init proc](img/initprocbp.png)
 
-We keep F8'ing, 
+We keep F8'ing and we reach the following function that does some yet unknown stuff. Let's give it a name, say "Entry".
+
+![Init proc](img/entry.png)
