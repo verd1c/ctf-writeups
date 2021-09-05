@@ -28,6 +28,6 @@ As we can see it's a PIE(Position Independent Executable), which means we won't 
 
 However, as the challenge description is "I'm using Arch btw", apart from the meme, let's try and see if there is any arch-specific runtime mappings in the executable that make in not secure:
 
-![Checksec](img/vsyscall.png)
+![Checksec](img/mappings.png)
 
 We can instantly notice vsyscall, a 
