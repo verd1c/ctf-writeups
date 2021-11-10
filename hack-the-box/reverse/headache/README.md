@@ -50,4 +50,4 @@ The next thing we see is what appears to be a hardcoded condition. v3 appears to
 
 ![Init proc](img/main.png)
 
-tbc...
+Not continued due to being an active challenge on HackTheBox
