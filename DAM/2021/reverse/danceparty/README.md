@@ -1,64 +1,49 @@
-# Malware
+# Danceparty
 
-This challenge includes a demonstration of a simple buffer overflow attack, with a little twist.
+## tl;dr
+
+Malware using strings that are first xor'd with a hex value and then encoded into base64
 
 ## Initial Thoughts
 
-Since we are given the source code, let's have a look at it:
+We analyze the executable with IDA. First things first, we check the strings with Shift-F12:
 
-![Initial Thoughts](img/initial.png)
+![Strings](img/strings.png)
 
-We can see that a local struct data is created, containing the user input, followed by a function pointer and then by a variable that will later decide wether or not the flag will be printed. Quite obviously, we need to overwrite that variable to 1.
+We notice some very obviously base64 encoded strings along with some file paths. Let's attempt to decode one of the base64 strings:
 
-Let's have a look at the struct to tell what's going on:
+![Strings B64](img/string_b64_decode.png)
 
-![Struct Data](img/struct.png)
+The output is not readable. However, it's random bytes so we instantly consider the chance of it being double encoded. Let's get into it.
 
-We can see that user input is 32 bytes, so we should be able to easily overflow that and reach the variable we want to overflow.
+## Reversing The Strings
 
-The problem arises at line 44 of main, where the second field of the struct, the function pointer, is called. In a normal call this would just call the canary function and move on, however in the case of an overflow, the address will be overwritten and the garbage in it will act as an address to be called, which will obviously lead in the termination of the program if the address is not correct.
+We double click the first base64 string to get to its location in memory, and then we list xrefs to that memory location as we're currently in the read only data segment(rdata):
 
-## Breaking the protection
+![First XREF](img/string_xref_init.png)
 
-The most obvious way through this, is to find the adddress of a function and overwrite the canary with it. Let's check the executable to see if we can do that:
+Double click and head to .data:off_140005000:
 
-![Checksec](img/checksec.png)
+![Second XREF](img/string_xref_table.png)
 
-As we can see it's a PIE(Position Independent Executable), which means we won't be able to hardcode the address of a function, as that will change on every execution of the program.
+We are now at the non-read only data segment(.data). Lets list xrefs to the memory location again, and head to it. We arrive at the following function:
 
-However, as the challenge description is "I'm using Arch btw", apart from the meme, let's try and see if there is any arch-specific runtime mappings in the executable that make in not secure:
+![Init func](img/decoding_function.png)
 
-![Checksec](img/mappings.png)
+We don't know much about the first function that's called(sub_140002F30), but we can see that the string(pszString) and it's length(cchString) are passed as arguments on the second function(sub_140002BA0). Let's check the second function:
 
-We can instantly notice vsyscall, a segment used to accelerate certain linux system calls. However, this segment's page is statically allocated to the exact same address in every execution since it's hardcoded in the kernel's application binary interface. This defeats the entire purpose of position independent code and ASLR and is removed by default in newer kernel builds.
+![Crypt func](img/crypt_function.png)
 
-## Getting the flag
+We see CryptStringToBinaryA, which is used to turn a string into a byte array. At this point we consider that this might be executed after the string is decrypted from base64, in order to further decode that non readable array of bytes we saw above. Let's head to the third function(sub_1400019E0) that takes as a parameter the byte array produced by the function above:
 
-Now that we know that vsyscall is statically allocated, we will try to overwrite the canary pointer to point to vsyscall, and then ovewrite the give_flag variable.
+![Xor function](img/xor_function.png)
 
-So our payload will need be constructed as:
-* Fill the 32 bytes of the user buffer
-* Overwrite the canary with the vsyscall address (0xffffffffff600000)
-* Overwrite the give_flag variable with 1
+Bingo! Every byte of the array is XOR'd with 0x2a. Finally the random byte array might make sense now. Let's write a python script that first decodes from base64 and then XOR's every byte with 0x2a:
 
-So let's write our script using pwntools:
+![Python solve](img/python_solve.png)
 
-```python
-from pwn import *
+And lets run it for all the strings:
 
-conn = remote('7b0000006c9823b85d686990-ccanary.challenge.master.allesctf.net', 31337, ssl=True)
+![Solution](img/solution.png)
 
-vsyscall_addr = 0xffffffffff600000
-
-conn.sendlineafter(b'> ', b'z'*31 + p64(vsyscall_addr) + p8(1))
-
-conn.interactive()
-```
-
-and by running it
-
-![Flag](img/flag.png)
-
-we get the flag:
-
-ALLES!{th1s_m1ght_n0t_work_on_y0ur_syst3m_:^)}
+Voila, dam{d33p_fr1ed_mem0ry_f0r_d4yz}
