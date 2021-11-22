@@ -1,6 +1,7 @@
+# solve.py
 from pwn import *
 
-conn = remote('64.227.36.32', '30169')
+conn = remote('64.227.36.32', '31174')
 
 def getl():
 	return conn.recv().decode('utf-8')
