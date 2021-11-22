@@ -1,5 +1,7 @@
+# solve.py
 from pwn import *
 
+# define emote hexs
 PLAYER = b'\xf0\x9f\xa4\x96'
 FIRE = b'\xf0\x9f\x94\xa5'
 MINE = b'\xe2\x98\xa0\xef\xb8\x8f'
@@ -16,10 +18,11 @@ conn.send(b'2\n')
 diamonds = 0
 wrenches = 0
 
+# run game loop
 while True:
     given = conn.recvuntil('> ')
 
-
+    # parse game board
     game_parse = []
     lines = given.split(b'\n')
     initX = 0
@@ -31,6 +34,8 @@ while True:
         line = []
         emojis = l.split(b' ')
         j = 0
+
+        # parse emotes in current line
         for e in emojis:
             if e == FIRE:
                 line.append('F')
@@ -50,6 +55,7 @@ while True:
         game_parse.append(line)
         i = i + 1
 
+    # remove empty arrays
     game = [x for x in game_parse if x != []]
     for l in game:
         ll = ''
@@ -60,13 +66,19 @@ while True:
     sol = []
     print('MaxX : ' + str(len(game[0])) + ' MaxY: ' + str(len(game)))
 
+    # solve current board
     def solve(G, curX, curY, orig, path):
+        # if out of bounds
         if curX < 0 or curX >= len(G[0]) or curY < 0 or curY >= len(G):
             return 9999
+            
         cur = G[curY][curX]
+
+        # if stepping on fire or mine
         if cur == 'F' or cur == 'B':
             return 9999
 
+        # finally reached the diamond, exit recursion
         if cur == 'D':
             sol.append(path)
             return 0
@@ -74,11 +86,19 @@ while True:
         left = 9999
         right = 9999
         down = 9999
+
+        # try right
         if orig != 'l':
             left = solve(G, curX - 1, curY, 'r', path + 'L')
+
+        # try left
         if orig != 'r':
             right = solve(G, curX + 1, curY, 'l', path + 'R')
+
+        # try down
         down = solve(G, curX, curY + 1, 'u', path + 'D')
+
+        # return shortest path of above three
         return min(left, right, down) + 1
 
 
@@ -90,7 +110,6 @@ while True:
     wrenches = wrenches + minpath
     if diamonds >= 500 and wrenches >= 5000:
         break
-
 
     print(conn.recvline())
     print(conn.recvline())
