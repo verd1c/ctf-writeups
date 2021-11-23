@@ -1,10 +1,10 @@
 # assembler.py
-
 input = open('program.asm', 'r')
 out = open('program.data', 'w+')
 
 binary = []
 
+# opcodes
 opcodes = {
     'movl' : 0x10,
     'clr' : 0x03,
@@ -23,6 +23,7 @@ opcodes = {
     'ret' : 0x12
 }
 
+# registers
 registers = {
     'ax' : 0x00,
     'bx' : 0x01,
@@ -33,13 +34,12 @@ registers = {
 labels = {}
 
 def make_operand(operand):
-    #print(operand)
-    
+    # If addition on label
     if len(operand.split('+')) == 2:
         arr = operand.split('+')
         return str(hex(labels[arr[0]] + int(arr[1], 10))[2:]).zfill(2)
-    
-    
+
+    # Convert depending on type
     if operand in registers:
         return str(hex(registers[operand])[2:]).zfill(2)
     elif operand in labels:
@@ -82,27 +82,20 @@ def parse():
             continue
 
         instruction = ''
-        #print(l)
         opcode = l.split(' ')[0]
-        #print(opcode)
-        
-        
         instruction += str(hex(opcodes[opcode])[2:])
-        #print(instruction)
         
+        # remove empty spaces
         args = [x.replace(',', '') for x in l.split(' ') if x != '']
         
+        # check if instruction with no args
         if len(args) != 1:
             instruction += make_operand(args[1])
             instruction += make_operand(args[2])        
         else:
             instruction += '0000'
         
-        
-        
-        #print(args, instruction)
         binary.append(instruction)
-        
         instruction_counter += 1
         
 
