@@ -30,7 +30,7 @@ The instruction that's stored in WR is broken down in 21 bits. The structure is 
 |    :---:     |     :---:      |     :---:     |
 | 16-20        | 8-15           | 0-7           |
 
-The opcode takes 5 bits while both the arguments take 8 bits each. This means we can represent all of them with one hex (byte) each. 
+The opcode takes 5 bits while both the arguments take 8 bits each. This means we can represent all of them with one byte each. 
 
 ## Breaking Down The Instrucitons
 
