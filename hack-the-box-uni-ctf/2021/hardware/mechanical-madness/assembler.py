@@ -1,3 +1,5 @@
+# assembler.py
+
 input = open('program.asm', 'r')
 out = open('program.data', 'w+')
 

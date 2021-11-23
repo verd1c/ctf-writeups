@@ -1,0 +1,3 @@
+# Hardware Madness
+
+## tl;dr
