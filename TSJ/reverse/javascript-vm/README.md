@@ -16,8 +16,6 @@ and ends with "Wrong":
 
 ![Start](img/init_end.png)
 
-
-
 ## Disassembling
 
 In order to see some sort of source code and try and analyze, I studied the VM's behavior with different instructions to be able to reconstruct the pseudo-assembly given the binary file.
@@ -54,7 +52,7 @@ The result looks like this:
 ...
 ```
 
-The full disassembled file is too big so I've included it as a file. I've also included my python disassembler both as a file and at the end of this README. Let's look at the disassembled pieces that are useful to us:
+The full disassembled file is too big so I've included it as a file. I've also included my python disassembler both as a file and at the end of this README. Let's look at the disassembled pieces that are useful to us...
 
 ## Discovering Calls
 
@@ -77,9 +75,77 @@ We can see the following reoccuring pattern calls:
 0x13: CAL D (0xd3);
 ```
 
-This means that we can distinguish 3 different functions that are being called from the program's start that we will see below.
+A number gets moved into a register and then the register gets called. This means that we can distinguish 3 different functions that are being called from the program's start that we will see below.
 
+## Main
 
+Looking at the disassembly's start, just after the first call, we see the following:
+
+```asm
+0x4: CAL D (0x4b)
+0x5: MVI A 30
+0x6: AUI A 1
+0x7: LDR C 0x0[A]
+0x8: MVI A 31
+0x9: AUI A 1
+0xa: LDR A 0x0[A]
+0xb: MVI D 27
+0xc: AUI D 0
+0xd: GTE A C D
+```
+
+This can be somehow disassembled as:
+```
+A <- 30
+A <- A + 256
+C <- *A
+A <- 31
+A <- A + 256
+A <- *A
+
+// By this point C = *(30 + 256), A = *(31 + 256)
+D <- 27
+IF A >= C GOTO D // IF mem[31] < mem[30] GOTO 27
+```
+
+But by checking around 27 (0x1B):
+
+```asm
+0x14: MVR C C 1
+0x15: MVI A 30
+0x16: AUI A 1
+0x17: STR C 0x0[A]
+0x18: MVI D 5
+0x19: AUI D 0
+0x1a: JMR A
+0x1b: MVI A 29
+0x1c: AUI A 1
+0x1d: MVI B 0
+0x1e: AUI B 0
+```
+
+We can decompile this as:
+
+```
+C <- C + 1
+A <- 30
+A <- A + 1
+*A <- C
+D <- 5
+GOTO D // GOTO 5
+...  <- 0x1B
+```
+
+Because 5 is the start of the loop (0x5) and C is being increased by 1 then being stored in mem[30], while then also being checked in the start of the loop and compared as mem[30] < mem[31], we can kind of guess this might be a for loop. Because of this, we decompile this and it's inner code as:
+
+```c++
+read_input();
+while(swirl_counter < mem[31]){ // 32 loops
+    swirl();
+    add_or_smth();
+    swirl_counter++;
+}
+```
 
 ## Input
 
