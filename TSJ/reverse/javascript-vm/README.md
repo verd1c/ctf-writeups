@@ -305,6 +305,10 @@ print(''.join([chr(c) for c in encoded_flag]))
 
 ## Flag
 
+By running the script, we get the flag:
+
+![Flag](img/flag.png)
+
 ## Disassembler
 
 ```py
