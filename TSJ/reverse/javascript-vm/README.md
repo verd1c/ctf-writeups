@@ -22,27 +22,55 @@ and ends with "Wrong":
 
 In order to see some sort of source code and try and analyze, I studied the VM's behavior with different instructions to be able to reconstruct the pseudo-assembly given the binary file.
 
-To begin with, the VM runs on 16-bit (2-byte) instructions. Using the VM's
+The VM runs on 16-bit (2-byte) instructions. We can pull every instruction's opcode and structure from the VM and create a python disassembler than will bring the binary file into a readable pseudo-assembly format.
 
+The result looks like this:
+
+```asm
+0x0: MVI A 2
+0x1: JMR A
+0x2: MVI D 75
+0x3: AUI D 0
+0x4: CAL D (0x4b)
+0x5: MVI A 30
+0x6: AUI A 1
+0x7: LDR C 0x0[A]
+0x8: MVI A 31
+0x9: AUI A 1
+0xa: LDR A 0x0[A]
+0xb: MVI D 27
+0xc: AUI D 0
+0xd: GTE A C D
+0xe: MVI D 156
+0xf: AUI D 0
+0x10: CAL D (0x9c) unnamed_2();
+0x11: MVI D 211
+0x12: AUI D 0
+0x13: CAL D (0xd3) unnamed_3();
+0x14: MVR C C 1
+0x15: MVI A 30
+0x16: AUI A 1
+0x17: STR C 0x0[A]
+```
 
 I've included my python disassembler both as a file and at the end of this README.
 
 ## Discovering Calls
 
-We can see the following reoccuring pattern
+We can see the following reoccuring pattern calls:
 ```asm
 0x2: MVI D 75
 0x3: AUI D 0
 0x4: CAL D (0x4b)
 ```
 
-```
+```asm
 0xe: MVI D 156
 0xf: AUI D 0
 0x10: CAL D (0x9c);
 ```
 
-```
+```asm
 0x11: MVI D 211
 0x12: AUI D 0
 0x13: CAL D (0xd3);
@@ -54,9 +82,49 @@ This means that we can distinguish 3 different functions that are being called f
 
 ## Input
 
+```c++
+void read_input(){
+    for(int g_iter = 0; g_iter < g_flag_len; ++i){
+        stdout_string("flag["); // "flag[" 
+        stdout_number(g_iter);  // counter (mem[28])
+        stdout_string("]: ");   // "]:"
+
+        do{
+            temp = input(); // input
+        }while(temp < 1);
+
+        g_input_flag[g_iter] = temp;
+
+        stdout_char(temp);
+        stdout_char("\n"); // "\n"
+    }
+    return;
+}
+```
+
 ## Swirl
 
-## Mapper
+```c++
+void swirl(){
+    for(int iter = 0; i < g_input_flag_len; ++i){
+        temp = g_input_flag[iter];
+        g_input_flag[iter] = g_input_flag[swirl[iter]];
+        g_input_flag[swirl[iter]] = temp;
+    }
+    return;
+}
+```
+
+## Mess
+
+```c++
+void mess(){
+    for(int iter = 0; i < flag_len; ++i){
+        g_input_flag[iter] = mapper[(iter + swirl_counter + 11) % flag_len]
+    }
+    return;
+}
+```
 
 ## Decryptor
 
@@ -86,7 +154,9 @@ loop from 31 to 0:
 print("Flag: " + input)
 ```
 
-With swirl_backwards and wrap_backwards just doing the same as swirl and wrap but in reverse order (from 51 to 0)
+With swirl_backwards and wrap_backwards just doing the same as swirl and wrap but in reverse order (from 51 to 0).
+
+In python:
 
 ```python
 # 32

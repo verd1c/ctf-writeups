@@ -23,39 +23,35 @@ exit()
 
 
 void read_input(){
-    while(g_counter < g_flag_len){
-        stdout_string("flag[");  // "flag["
-        stdout_number(g_counter); // counter (mem[28])
-        stdout_string("]: ");  // "]:"
+    for(int g_iter = 0; g_iter < g_flag_len; ++i){
+        stdout_string("flag["); // "flag[" 
+        stdout_number(g_iter);  // counter (mem[28])
+        stdout_string("]: ");   // "]:"
 
         do{
             temp = input(); // input
         }while(temp < 1);
 
-        g_input_flag[g_counter] = temp;
+        g_input_flag[g_iter] = temp;
 
         stdout_char(temp);
         stdout_char("\n"); // "\n"
-        
-        g_counter++;
     }
     return;
 }
 
 void swirl(){
-    int iter = 0;
-    while(iter < g_input_flag){
+    for(int iter = 0; i < g_input_flag_len; ++i){
         temp = g_input_flag[iter];
         g_input_flag[iter] = g_input_flag[swirl[iter]];
         g_input_flag[swirl[iter]] = temp;
-        iter++;
     }
     return;
 }
 
-void add_or_smth(){
-    int iter = 0;
-    while(iter < flag_len){ // flag_len
+void mess(){
+    for(int iter = 0; i < flag_len; ++i){
         g_input_flag[iter] = mapper[(iter + swirl_counter + 11) % flag_len]
     }
+    return;
 }
