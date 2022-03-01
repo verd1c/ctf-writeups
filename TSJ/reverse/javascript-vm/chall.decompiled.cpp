@@ -6,9 +6,6 @@ while(swirl_counter < mem[31]){ // 32 loops
 }
 
 for(int iter = 0; i < flag_len; ++i){
-    a = enc_flag[iter];
-    b = input_flag[iter];
-
     if(enc_flag[iter] != input_flag[iter]){
         stdout_string("Wrong!\n"); // "Wrong!"
         exit();

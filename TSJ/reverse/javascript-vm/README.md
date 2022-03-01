@@ -147,6 +147,56 @@ while(swirl_counter < mem[31]){ // 32 loops
 }
 ```
 
+We also notice SYS calls. If we look at the VM's handling of SYS calls, we can see that it handles it the following way:
+
+```
+IF REGISTER_A == 0 THEN
+    STDOUT
+ELSE
+    STDIN
+```
+
+Also, when stdout, the following modes are presented depending on register C:
+
+![Stdout](img/output_modes.png)
+
+So for example, the assembly piece:
+
+```asm
+0x43: MVI A 0
+0x44: AUI A 0
+0x45: MVI B 254
+0x46: AUI B 1
+0x47: MVI C 4
+0x48: AUI C 0
+0x49: SYS
+```
+
+Would print the string at memory location 254 + 256 to stdout.
+
+We disassemble the rest of the main function (till we meet 0x4b which we found as the first function) in a similar way to get:
+
+```c++
+read_input();
+while(swirl_counter < mem[31]){ // 32 loops
+    swirl();
+    add_or_smth();
+    swirl_counter++;
+}
+
+for(int iter = 0; i < flag_len; ++i){
+    if(enc_flag[iter] != input_flag[iter]){
+        stdout_string("Wrong!\n"); // "Wrong!"
+        exit();
+    }
+}
+
+stdout_string("Correct!"); // "Correct!"
+exit()
+```
+
+Naming is already done by me, but quite obviously 32 rounds of some encryption are run on the input which is then compared with some sort of encrypted flag in the binary's memory.
+
 ## Input
 
 ```c++
