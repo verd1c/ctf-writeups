@@ -13,7 +13,7 @@ for(int iter = 0; i < flag_len; ++i){
 }
 
 stdout_string("Correct!"); // "Correct!"
-exit()
+exit();
 
 
 void read_input(){
