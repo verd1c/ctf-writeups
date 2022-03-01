@@ -51,9 +51,10 @@ The result looks like this:
 0x15: MVI A 30
 0x16: AUI A 1
 0x17: STR C 0x0[A]
+...
 ```
 
-I've included my python disassembler both as a file and at the end of this README.
+The full disassembled file is too big so I've included it as a file. I've also included my python disassembler both as a file and at the end of this README. Let's look at the disassembled pieces that are useful to us:
 
 ## Discovering Calls
 
