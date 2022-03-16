@@ -1,14 +1,3 @@
-<!--
-+++
-title="Tenth Post"
-date=2019-07-29
-
-[taxonomies]
-categories = ["Sample Post"]
-tags = ["post", "lorem"]
-+++
--->
-
 # JavaScript VM
 
 ## tl;dr 
@@ -495,3 +484,12 @@ for lIter in range(0, math.floor(len(sBinary)), 2):
         print(f"\n{bcolors.WARNING}-- Function {fFunctions[lInstrOffset]} --{bcolors.ENDC}")
     print(sOutInstr)
 ```
+
++++
+title="Tenth Post"
+date=2019-07-29
+
+[taxonomies]
+categories = ["Sample Post"]
+tags = ["post", "lorem"]
++++
