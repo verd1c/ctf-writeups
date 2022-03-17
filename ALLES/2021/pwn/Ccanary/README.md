@@ -1,5 +1,7 @@
 # Ccanary
 
+## tl;dr
+
 This challenge includes a demonstration of a simple buffer overflow attack, with a little twist.
 
 ## Initial Thoughts
