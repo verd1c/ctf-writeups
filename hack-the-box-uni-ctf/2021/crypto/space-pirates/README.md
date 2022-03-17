@@ -1,14 +1,3 @@
-<!--
-+++
-title="Tenth Post"
-date=2019-07-29
-
-[taxonomies]
-categories = ["Sample Post"]
-tags = ["post", "lorem"]
-+++
--->
-
 
 # Space Pirates
 
